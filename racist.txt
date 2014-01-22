@@ -1,0 +1,25 @@
+ARB Test:arb test
+ARB Test 2: arbtest
+Generalizations:[RACE] people are
+Generalizations:[RACE] are
+Racism:i hate [RACE]
+Racism:i hate all [RACE]
+Racism:all [RACE]
+Racism:kill the [RACE]
+Racism:down with the [RACE]
+Slurs:nigger
+Slurs:chink
+Slurs:pollok
+Slurs:wetback
+Slurs:beaner
+Slurs:cracker
+Slurs:chonky
+Slurs:gaijin
+Slurs:golliwog
+Slurs:kike
+Slurs:redskin
+Slurs:gringo
+Slurs:jap
+Slurs:ching chong
+Slurs:squaw
+Slurs:chinaman

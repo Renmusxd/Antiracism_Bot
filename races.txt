@@ -1,0 +1,20 @@
+black
+blacks
+asian
+asians
+arab
+arabs
+mexican
+mexicans
+chinese
+japanese
+white
+whites
+jew
+jews
+ekimo
+eskimos
+native american
+native americans
+indian
+indians
