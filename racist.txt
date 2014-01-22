@@ -8,18 +8,33 @@ Racism:all [RACE]
 Racism:kill the [RACE]
 Racism:down with the [RACE]
 Slurs:nigger
+Slurs:niggers
 Slurs:chink
+Slurs:chinks
 Slurs:pollok
+Slurs:polloks
 Slurs:wetback
+Slurs:wetbacks
 Slurs:beaner
+Slurs:beaners
 Slurs:cracker
+Slurs:crackers
 Slurs:chonky
+Slurs:chonkies
+Slurs:chinkys
 Slurs:gaijin
 Slurs:golliwog
+Slurs:golliwogs
 Slurs:kike
+Slurs:kikes
 Slurs:redskin
+Slurs:redskins
 Slurs:gringo
+Slurs:gringos
 Slurs:jap
+Slurs:japs
 Slurs:ching chong
 Slurs:squaw
+Slurs:squaws
 Slurs:chinaman
+Slurs:chinamen

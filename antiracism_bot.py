@@ -5,6 +5,8 @@ import sys
 import os
 import praw
 
+#TODO make the comment fetching and analysis on a different threads
+# You can do this!
 
 #TODO use psutil to monitor network usage
 # http://stackoverflow.com/questions/8958614/measure-network-data-with-python
@@ -68,7 +70,7 @@ class RacismChecker(object):
         if self.verbose:print("\t[*] Reading "+self.raceFilePath)
         with open(self.raceFilePath) as raceFile:
             for raceLine in raceFile:
-                raceLine = raceLine.strip()
+                raceLine = " "+raceLine.strip()+" "
                 self.races.append(raceLine)
         if self.verbose:print("\t[*] Race file contains "+str(len(self.races))+" races")
         if self.verbose:print("\t[*] Reading "+self.racismFilePath)
