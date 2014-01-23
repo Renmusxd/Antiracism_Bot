@@ -8,11 +8,11 @@ import praw
 #TODO make the comment fetching and analysis on a different threads
 # You can do this!
 
-#TODO use psutil to monitor network usage
-# http://stackoverflow.com/questions/8958614/measure-network-data-with-python
+#TODO make it run as secure server for remote control
+# Probably more difficult
 
 __author__="Sumner"
-__version__="0.9.2"
+__version__="0.9.2.1"
 USER_AGENT = "Antiracism_Bot by /u/Renmusxd"
 DEFAULT_CREDENTIAL_FILE = "credentials.txt"
 DEFAULT_RACISM_FILE = "racist.txt"
