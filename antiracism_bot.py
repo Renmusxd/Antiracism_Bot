@@ -423,11 +423,12 @@ def reportException(e,verbose=False):
             elif "password:" in line:
                 line = line.replace("password:","")
                 password = line
-    print("[!] Crashed with exception:\n"+str(type(e))+"\n\n"+e.message)
+    exceptionReportString = str(type(e))+"\n\n"+e.message
+    print("[!] Crashed with exception:\n"+exceptionReportString)
     print("[!] Attempting to send message to Renmusxd")
     try:
         r.login(username,password)
-        r.send_message("Renmusxd","Crash report for Antiracism_Bot","Crashed with exception:\n"+str(type(e))+"\n\n"+e.message)
+        r.send_message("Renmusxd","Crash report for Antiracism_Bot","Crashed with exception:\n"+exceptionReportString)
         if verbose:print("[+] Crash report sent sucessfully")
     except Exception:
         if verbose:print("[!] Exception while sending report, sorry. There's nothing more I can do.")
