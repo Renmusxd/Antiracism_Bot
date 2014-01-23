@@ -6,6 +6,7 @@ import sys
 import os
 import praw
 import unicodedata
+import psutil
 #TODO make the comment fetching and analysis on a different threads
 # You can do this!
 
@@ -287,8 +288,8 @@ def networkHandler(limit,bot,focus=None,verbose=False):
     managing = True
     try:
         while managing:
-            time.sleep(300)
-            netinfo = psutil.network_io_counters(pernic=True)
+            time.sleep(300) #Five minute TODO make changable
+            netinfo = psutil.net_io_counters(pernic=True)
             totalusage = 0
             if focus in netinfo:
                 focusNetInfo = netinfo[focus]
@@ -305,9 +306,9 @@ def networkHandler(limit,bot,focus=None,verbose=False):
                 managing = False
             if verbose:
                 if focus in netinfo:
-                    print("[*] Total network usage on "+focus+": "+str(totalusage))
+                    print("[*] Total network usage on "+focus+": "+str(totalusage)+"/"+str(limit))
                 else:
-                    print("[*] Total network usage: "+str(totalusage))
+                    print("[*] Total network usage: "+str(totalusage)+"/"+str(limit))
                     
     except Exception as e:
         if verbose:print("[!] Exception encountered, shutting down")
