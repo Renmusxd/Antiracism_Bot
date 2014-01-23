@@ -1,8 +1,8 @@
 0:ARB Test:arb test
 0:ARB Test2: arbtest
 # Needs refinement
-3:Generalizations:[RACE] people are
-3:Generalizations:all [RACE] are
+#3:Generalizations:[RACE] people are
+#3:Generalizations:all [RACE] are
 8:Racism:i hate [RACE]
 8:Racism:i hate all [RACE]
 10:Racism:kill the [RACE]
