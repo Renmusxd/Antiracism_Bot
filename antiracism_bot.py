@@ -20,6 +20,8 @@ DEFAULT_RACE_FILE = "races.txt"
 DEFAULT_REPLIED_FILE = "replied.txt"
 DEFAULT_NETWORK_LIMIT = 1000000000L # May be subject to change
 
+sys.argv = ["antiracism_bot.py","-v","-d","all"]
+
 class RacismChecker(object):
     '''
     Finds racism on the internet
@@ -269,7 +271,7 @@ def networkHandler(limit,bot,focus=None,verbose=False):
     managing = True
     try:
         while managing:
-            sleep(300)
+            time.sleep(300)
             netinfo = psutil.network_io_counters(pernic=True)
             totalusage = 0
             if focus in netinfo:
