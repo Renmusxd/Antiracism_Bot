@@ -77,17 +77,17 @@ class RacismChecker(object):
         with open(self.racismFilePath) as racismFile:
             for racismLine in racismFile:
                 # Space on each side should prevent [jap]anese from alert
-                racismLine = " "+racismLine.strip()+" "
+                racismLine = racismLine.strip()
                 if racismLine.find(":")>-1:
                     reason = racismLine[:racismLine.find(":")]
                     racismLine = racismLine[racismLine.find(":")+1:]
                     if "[RACE]" in racismLine:
                         recRacismTable = self.raceRecursion(racismLine)
                         for phrase in recRacismTable:
-                            racismTable[phrase]=reason
+                            racismTable[" "+phrase.lower()+" "] = reason.lower()
                     else:
                         # ALL LOWER CASE!
-                        racismTable[racismLine.lower()] = reason.lower()
+                        racismTable[" "+racismLine.lower()+" "] = reason.lower()
                 else:
                     if self.verbose:print("\t[!] Failed to parse: "+racismLine)
         if self.verbose:print("\t[*] Constructed "+str(len(racismTable))+" racist phrases")
