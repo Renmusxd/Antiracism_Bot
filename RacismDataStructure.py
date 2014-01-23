@@ -56,6 +56,3 @@ class DataStructure(object):
                     selNode.setNext(newNode)
                 else:
                     selNode = selNode.next()
-
-
-# Uploading this to github
