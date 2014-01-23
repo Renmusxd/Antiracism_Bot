@@ -18,6 +18,7 @@ DEFAULT_CREDENTIAL_FILE = "credentials.txt"
 DEFAULT_RACISM_FILE = "racist.txt"
 DEFAULT_RACE_FILE = "races.txt"
 DEFAULT_REPLIED_FILE = "replied.txt"
+
 class RacismChecker(object):
     '''
     Finds racism on the internet
