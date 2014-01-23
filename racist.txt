@@ -2,9 +2,9 @@ ARB Test:arb test
 ARB Test 2: arbtest
 Generalizations:[RACE] people are
 Generalizations:[RACE] are
+Generalizations:all [RACE]
 Racism:i hate [RACE]
 Racism:i hate all [RACE]
-Racism:all [RACE]
 Racism:kill the [RACE]
 Racism:down with the [RACE]
 Slurs:nigger
