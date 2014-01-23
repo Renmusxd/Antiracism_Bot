@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+from RacismDataStructure import DataStructure
 from multiprocessing import Process
 import time
 import sys
@@ -61,7 +62,7 @@ class RacismChecker(object):
         self.alreadyDone = set()
         if self.verbose:print("[*] Reading previously made comments")
         self.readAlreadyDone()
-        self.todo = {}
+        self.todo = DataStructure()
         
     def shutDown(self):
         self.saveAlreadyDone()
@@ -138,8 +139,9 @@ class RacismChecker(object):
             time.sleep(2)
     
     def manageTODOs(self):
-        for comment, replyText in self.todo.iteritems():
+        while self.todo.hasNext():
             try:
+                comment, replyText = self.todo.pop()
                 comment.reply(replyText)
                 if self.verbose:print("[*] Replied to comment "+comment.id+":\n"+replyText)
                 self.alreadyDone.add(comment.id)
@@ -197,7 +199,7 @@ class RacismChecker(object):
                         print("\t[!] Cannot reply: Ratelimit Error")
                         print("\t[*] "+e.message)
                         print("\t[*] Adding comment to TODO set")
-                        self.todo[comment] = replyText
+                        self.todo.add((comment,replyText),1)
                     
     def checkIfCommentIsRacist(self,commentText):
         '''
