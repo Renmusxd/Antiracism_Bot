@@ -6,8 +6,8 @@ __version__="1.0"
 
 class StackNode(object):
     def __init__(self,item,value):
-        self.item = item
-        self.value = value
+        self.myitem = item
+        self.myvalue = value
         self.nextNode = None
 
     def setNext(self,nextNode):
@@ -17,10 +17,10 @@ class StackNode(object):
         return self.nextNode
 
     def item(self):
-        return self.item
+        return self.myitem
 
     def value(self):
-        return self.value
+        return self.myvalue
 
 class DataStructure(object):
     '''

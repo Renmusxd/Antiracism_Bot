@@ -224,7 +224,7 @@ class RacismChecker(object):
                         reasonDict[reason]=1
                 if self.verbose:
                     subredditname = unicodedata.normalize('NFKD', comment.subreddit.display_name).encode('ascii','ignore')
-                    print("[*] Found racist comment: "+comment.id+" in /r/"+subredditname)
+                    print("[*] Found potentially racist comment: "+comment.id+" in /r/"+subredditname)
                     print("[*] Value: "+str(totalValue))
                 # Make sentence based on racism
                 for racismReason, count in reasonDict.iteritems():
@@ -323,11 +323,15 @@ def startThreadsAll(bot,verbose=False,multithreadReplies=False):
     else:
         p3 = Process(target=bot.allCommentParsing)
         p4 = Process(target=bot.replyManager)
-    p1.start()
-    p2.start()
-    p3.start()
-    if p4:p4.start()
-    p3.join()
+    try:
+        p1.start()
+        p2.start()
+        p3.start()
+        if p4:p4.start()
+        p3.join()
+    except Exception as e:
+        bot.shutdown()
+        raise e
     
 def startThreadsSubreddit(bot,subredditString,verbose=False,multithreadReplies=False):
     p1 = Process(target=serverHandler)
@@ -337,11 +341,15 @@ def startThreadsSubreddit(bot,subredditString,verbose=False,multithreadReplies=F
     else:
         p3 = Process(target=bot.subredditCommentParsing,args=(subredditString))
         p4 = Process(target=bot.replyManager)
-    p1.start()
-    p2.start()
-    p3.start()
-    if p4:p4.start()
-    p3.join()
+    try:
+        p1.start()
+        p2.start()
+        p3.start()
+        if p4:p4.start()
+        p3.join()
+    except Exception as e:
+        bot.shutdown()
+        raise e
     
 def serverHandler():
     #TODO communicate with clients
