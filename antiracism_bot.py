@@ -26,7 +26,7 @@ DEFAULT_RACE_FILE = "races.txt"
 DEFAULT_REPLIED_FILE = "replied.txt"
 DEFAULT_NETWORK_LIMIT = 1000000000L # May be subject to change
 
-sys.argv = ["antiracism_bot.py","-v","-d","-m","all"]
+#sys.argv = ["antiracism_bot.py","-v","-d","-m","all"]
 
 class RacismChecker(object):
     '''
