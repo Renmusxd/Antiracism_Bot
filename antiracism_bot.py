@@ -70,7 +70,7 @@ class RacismChecker(object):
         self.todo = DataStructure()
         self.todoIDs = []
         
-    def shutDown(self):
+    def shutdown(self):
         self.saveAlreadyDone()
         self.running = False
         
@@ -191,9 +191,13 @@ class RacismChecker(object):
         '''
         if self.verbose:print("[*] Starting reply serving")
         while self.running:
-            self.manageTODOs()
-            self.saveAlreadyDone()
-            time.sleep(sleepTime)
+            try:
+                self.manageTODOs()
+                self.saveAlreadyDone()
+                time.sleep(sleepTime)
+            except Exception as e:
+                if self.verbose:print("[!] Exception: "+e.message)
+                reportException(e)
     
     def manageTODOs(self):
         while self.todo.hasNext():
@@ -389,7 +393,7 @@ def networkHandler(limit,bot,focus=None,verbose=False):
                     print("[!] Total network usage exceeded max")
                     print("\t"+str(totalusage)+"/"+str(limit))
                     print("[!] Shutting down")
-                bot.shutDown()
+                bot.shutdown()
                 managing = False
             if verbose:
                 if focus in netinfo:
