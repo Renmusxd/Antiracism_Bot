@@ -10,13 +10,13 @@ class StackNode(object):
         self.item = item
         self.value = value
         self.nextNode = None
-        
+
     def setNext(self,nextNode):
         self.nextNode = nextNode
-        
+
     def next(self):
         return self.nextNode
-        
+
     def item(self):
         return self.item
 
@@ -30,15 +30,15 @@ class DataStructure(object):
     def __init__(self,maxsize=-1):
         self.maxSize = maxsize
         self.topNode = None
-    
+
     def hasNext(self):
         return self.topNode!=None
-    
+
     def pop(self):
         top = self.topNode
         self.topNode = self.topNode.next()
         return top.item()
-    
+
     def add(self,item,value):
         newNode = StackNode(item,value)
         if self.topNode==None:
@@ -57,4 +57,4 @@ class DataStructure(object):
                     selNode.setNext(newNode)
                 else:
                     selNode = selNode.next()
-                    
+
