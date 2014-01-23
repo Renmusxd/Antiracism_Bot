@@ -10,24 +10,17 @@ class StackNode(object):
         self.item = item
         self.value = value
         self.nextNode = None
-        self.prevNode = None
         
     def setNext(self,nextNode):
         self.nextNode = nextNode
         
-    def setPrev(self,prevNode):
-        self.prevNode = prevNode
-        
     def next(self):
         return self.nextNode
         
-    def prev(self):
-        return self.prevNode
-        
-    def getItem(self):
+    def item(self):
         return self.item
 
-    def getValue(self):
+    def value(self):
         return self.value
 
 class DataStructure(object):
@@ -44,26 +37,24 @@ class DataStructure(object):
     def pop(self):
         top = self.topNode
         self.topNode = self.topNode.next()
-        return top.getValue()
+        return top.item()
     
     def add(self,item,value):
         newNode = StackNode(item,value)
-        if self.topNode!=None:
-            selNode = self.topNode
-            while True:
-                if value>selNode.getValue():
-                    newNode.setPrev(selNode.prev())
-                    newNode.setNext(selNode)
-                    selNode.prev().setNext(newNode)
-                    selNode.setPrev(newNode)
-                else:
-                    if selNode.next()==None:
-                        newNode.setPrev(selNode)
-                        selNode.setNext(newNode)
-                    else:
-                        selNode = selNode.next()
-                        break
-                    
+        if self.topNode==None:
+            self.topNode = newNode
+        elif value>self.topNode.value():
+            newNode.setNext(self.topNode)
+            self.topNode = newNode
         else:
-            self.topNode=StackNode(item,value)
-        self.topNode.setPrev(None)
+            selNode = topNode
+            # Emergency while condition, should never happen.
+            while selNode.next()!=None:
+                if value>selNode.next().value():
+                    newNode.setNext(selNode.next())
+                    selNode.setNext(newNode)
+                elif selNode.next()==None:
+                    selNode.setNext(newNode)
+                else:
+                    selNode = selNode.next()
+                    

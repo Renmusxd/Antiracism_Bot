@@ -25,7 +25,7 @@ DEFAULT_RACE_FILE = "races.txt"
 DEFAULT_REPLIED_FILE = "replied.txt"
 DEFAULT_NETWORK_LIMIT = 1000000000L # May be subject to change
 
-sys.argv = ["antiracism_bot.py","-v","-m","all"]
+sys.argv = ["antiracism_bot.py","-v","-d","-m","all"]
 
 class RacismChecker(object):
     '''
@@ -34,7 +34,7 @@ class RacismChecker(object):
     def __init__(self,username,password,racismPhraseFilePath,raceFilePath,repliedFilePath,verbose=False,reply=True):
         self.verbose = verbose
         if self.verbose:print("[*] Antiracism_Bot v."+__version__)
-        if self.verbose:print("[+] Initialising new Bot")
+        if self.verbose:print("[*] Initialising new Bot")
         if self.verbose:print("[*] Verbose mode activated")
         self.reply = reply
         if self.verbose:
@@ -151,6 +151,7 @@ class RacismChecker(object):
         '''
         Just reads and parses comments for subreddit, does not autoreply
         '''
+        if self.verbose:print("[*] Starting comment parsing")
         while self.running:
             subreddit = self.r.get_subreddit(subredditName)
             subredditComments = subreddit.get_comments(limit=None)
@@ -161,6 +162,7 @@ class RacismChecker(object):
         '''
         Just reads and parses comments for all subreddits, does not autoreply
         '''
+        if self.verbose:print("[*] Starting comment parsing")
         while self.running:
             all_comments = self.r.get_comments("all",limit=None)
             self.commentLoop(all_comments,addTODO=True)
@@ -170,6 +172,7 @@ class RacismChecker(object):
         '''
         Just replies to TODOs, does not read comments
         '''
+        if self.verbose:print("[*] Starting reply serving")
         while self.running:
             self.manageTODOs()
             self.saveAlreadyDone()
@@ -183,9 +186,9 @@ class RacismChecker(object):
                 subredditname = unicodedata.normalize('NFKD', comment.subreddit.display_name).encode('ascii','ignore')
                 if self.reply:
                     comment.reply(replyText)
-                    if self.verbose:print("[*] Replied to comment "+comment.id+" in /r/"+subredditname+":\n"+replyText)
+                    if self.verbose:print("[+] Replied to comment "+comment.id+" in /r/"+subredditname+":\n"+replyText)
                 else:
-                    if self.verbose:print("[*] Would reply to comment "+comment.id+" in /r/"+subredditname+":\n"+replyText)
+                    if self.verbose:print("[+] Would reply to comment "+comment.id+" in /r/"+subredditname+":\n"+replyText)
                 self.alreadyDone.add(comment.id)
                 self.todoIDs.remove(comment.id)
             except praw.errors.RateLimitExceeded:
@@ -247,7 +250,7 @@ class RacismChecker(object):
                             comment.reply(replyText)
                             if self.verbose:print("\t[+] Replied: "+replyText)
                         else:
-                            if self.verbose:print("\t[*] Would reply:\n\t"+replyText)
+                            if self.verbose:print("\t[+] Would reply:\n\t"+replyText)
                         self.alreadyDone.add(comment.id)
                     except praw.errors.RateLimitExceeded as e:
                         if self.verbose:
