@@ -9,14 +9,13 @@ import unicodedata
 import psutil
 import socket
 import SocketServer
-#TODO make the comment fetching and analysis on a different threads
-# You can do this!
-
 #TODO make it run as secure server for remote control
 # Probably more difficult
 
+#TODO improve ability to avoid false positives
+
 __author__="Sumner"
-__version__="0.9.4"
+__version__="0.9.5"
 USER_AGENT = "Antiracism_Bot by /u/Renmusxd"
 DEFAULT_CREDENTIAL_FILE = "credentials.txt"
 DEFAULT_RACISM_FILE = "racist.txt"
@@ -24,7 +23,7 @@ DEFAULT_RACE_FILE = "races.txt"
 DEFAULT_REPLIED_FILE = "replied.txt"
 DEFAULT_NETWORK_LIMIT = 1000000000L # May be subject to change
 
-sys.argv = ["antiracism_bot.py","-v","-d","all"]
+sys.argv = ["antiracism_bot.py","-v","-m","-d","all"]
 
 class RacismChecker(object):
     '''
@@ -123,7 +122,7 @@ class RacismChecker(object):
     
     def subredditLoop(self,subredditName):
         '''
-        Check specific subreddit(s) for racism
+        Check specific subreddit(s) for racism and replies
         '''
         if self.verbose:print("[*] Checking subreddits: "+subredditName)
         while self.running:
@@ -146,13 +145,44 @@ class RacismChecker(object):
             self.saveAlreadyDone()
             time.sleep(2)
     
+    def subredditCommentParsing(self,subredditName,sleepTime=2):
+        '''
+        Just reads and parses comments for subreddit, does not autoreply
+        '''
+        while self.running:
+            subreddit = self.r.get_subreddit(subredditName)
+            subredditComments = subreddit.get_comments(limit=None)
+            self.commentLoop(subredditComments,addTODO=True)
+            time.sleep(sleepTime)
+    
+    def allCommentParsing(self,sleepTime=2):
+        '''
+        Just reads and parses comments for all subreddits, does not autoreply
+        '''
+        while self.running:
+            all_comments = self.r.get_comments("all",limit=None)
+            self.commentLoop(all_comments,addTODO=True)
+            time.sleep(sleepTime)
+    
+    def replyManager(self,sleepTime=10):
+        '''
+        Just replies to TODOs, does not read comments
+        '''
+        while self.running:
+            self.manageTODOs()
+            self.saveAlreadyDone()
+            time.sleep(sleepTime)
+    
     def manageTODOs(self):
         while self.todo.hasNext():
             try:
                 comment, replyText = self.todo.pop()
-                comment.reply(replyText)
                 subredditname = unicodedata.normalize('NFKD', comment.subreddit.display_name).encode('ascii','ignore')
-                if self.verbose:print("[*] Replied to comment "+comment.id+" in /r/"++":\n"+replyText)
+                if self.reply:
+                    comment.reply(replyText)
+                    if self.verbose:print("[*] Replied to comment "+comment.id+" in /r/"+subredditname+":\n"+replyText)
+                else:
+                    if self.verbose:print("[*] Would reply to comment "+comment.id+" in /r/"+subredditname+":\n"+replyText)
                 self.alreadyDone.add(comment.id)
                 self.todoIDs.remove(comment.id)
             except praw.errors.RateLimitExceeded:
@@ -170,7 +200,7 @@ class RacismChecker(object):
             for a in self.alreadyDone:
                 repFile.write("\n"+a)
     
-    def commentLoop(self,comments):
+    def commentLoop(self,comments,addTODO=False):
         for comment in comments:
             (commentisracist, quotes) = self.checkIfCommentIsRacist(comment.body.lower())
             if commentisracist and comment.author.name.lower()!=self.username.lower() and comment.id not in self.alreadyDone and comment.id not in self.todoIDs:
@@ -188,8 +218,8 @@ class RacismChecker(object):
                 if self.verbose:
                     subredditname = unicodedata.normalize('NFKD', comment.subreddit.display_name).encode('ascii','ignore')
                     print("[*] Found racist comment: "+comment.id+" in /r/"+subredditname)
-                    print("[*] "+comment.body.strip())
                     print("[*] Value: "+str(totalValue))
+                    print("[*] "+comment.body.strip())
                 # Make sentence based on racism
                 for racismReason, count in reasonDict.iteritems():
                     replyText+=racismReason+"("+str(count)+"), "
@@ -202,20 +232,25 @@ class RacismChecker(object):
                     for racismReason, count in reasonDict.iteritems():
                         print("\t-"+racismReason)
                 # Try to reply
-                try:
-                    if self.reply:
-                        comment.reply(replyText)
-                        if self.verbose:print("\t[+] Replied: "+replyText)
-                    else:
-                        if self.verbose:print("\t[*] Would reply:\n\t"+replyText)
-                    self.alreadyDone.add(comment.id)
-                except praw.errors.RateLimitExceeded as e:
-                    if self.verbose:
-                        print("\t[!] Cannot reply: Ratelimit Error")
-                        print("\t[*] "+e.message)
-                        print("\t[*] Adding comment to TODO set")
-                        self.todo.add((comment,replyText),)
-                        self.todoIDs.append(comment.id)
+                if addTODO:
+                    if self.verbose:print("[*] Adding reply to todo stack")
+                    self.todo.add((comment,replyText),totalValue)
+                    self.todoIDs.append(comment.id)
+                else:
+                    try:
+                        if self.reply:
+                            comment.reply(replyText)
+                            if self.verbose:print("\t[+] Replied: "+replyText)
+                        else:
+                            if self.verbose:print("\t[*] Would reply:\n\t"+replyText)
+                        self.alreadyDone.add(comment.id)
+                    except praw.errors.RateLimitExceeded as e:
+                        if self.verbose:
+                            print("\t[!] Cannot reply: Ratelimit Error")
+                            print("\t[*] "+e.message)
+                            print("\t[*] Adding comment to TODO set")
+                            self.todo.add((comment,replyText),totalValue)
+                            self.todoIDs.append(comment.id)
                     
     def checkIfCommentIsRacist(self,commentText):
         '''
@@ -271,22 +306,32 @@ def getCredentials(fileName):
                 password = line
     return (username,password)
 
-def startThreadsAll(bot,verbose=False):
+def startThreadsAll(bot,verbose=False,multithreadReplies=False):
     p1 = Process(target=serverHandler)
     p2 = Process(target=networkHandler,args=(DEFAULT_NETWORK_LIMIT,bot,None,verbose))
-    p3 = Process(target=bot.allLoop)
+    if not multithreadReplies:
+        p3 = Process(target=bot.allLoop)
+    else:
+        p3 = Process(target=bot.allCommentParsing)
+        p4 = Process(target=bot.replyManager)
     p1.start()
     p2.start()
     p3.start()
+    if p4:p4.start()
     p3.join()
     
-def startThreadsSubreddit(bot,subredditString,verbose=False):
+def startThreadsSubreddit(bot,subredditString,verbose=False,multithreadReplies=False):
     p1 = Process(target=serverHandler)
     p2 = Process(target=networkHandler,args=(DEFAULT_NETWORK_LIMIT,bot,None,verbose))
-    p3 = Process(target=bot.subredditLoop,args=(subredditString,))
+    if not multithreadReplies:
+        p3 = Process(target=bot.subredditLoop,args=(subredditString,))
+    else:
+        p3 = Process(target=bot.subredditCommentParsing,args=(subredditString))
+        p4 = Process(target=bot.replyManager)
     p1.start()
     p2.start()
     p3.start()
+    if p4:p4.start()
     p3.join()
     
 def serverHandler():
@@ -333,11 +378,13 @@ if __name__ == "__main__":
     try:
         isverbose = False
         doesreply = True
+        multithreadR = False
         if "-help" in sys.argv:
             print("Usage: python antiracism_bot.py <flags> [subreddits/all]")
             print("Flags\t\tActions")
             print("-v\t\tVerbose mode")
             print("-d\t\tNo replies")
+            print("-m\t\tMultithread replies")
             print("-e\t\tExample crash report")
         else:
             if "-v" in sys.argv:
@@ -346,6 +393,9 @@ if __name__ == "__main__":
             if "-d" in sys.argv:
                 doesreply = False
                 sys.argv.remove("-d")
+            if "-m" in sys.argv:
+                multithreadR = True
+                sys.argv.remove("-m")
             if "-e" in sys.argv:
                 raise Exception("Example exception")
             # parse for subreddits
@@ -358,12 +408,16 @@ if __name__ == "__main__":
                 subredditString = args[1]
                 for sub in args[2:]:
                     subredditString += "+"+sub
-                if isverbose:print("[*] Starting threads")
-                startThreadsSubreddit(racismChecker,subredditString,verbose=isverbose)
+                if isverbose:
+                    print("[*] Starting threads")
+                    if multithreadR:print("[*] Replying in seperate thread")
+                startThreadsSubreddit(racismChecker,subredditString,verbose=isverbose,multithreadReplies=multiThreadR)
             elif len(args)>1 and "all" in args:
                 racismChecker = RacismChecker(username, password,DEFAULT_RACISM_FILE,DEFAULT_RACE_FILE,DEFAULT_REPLIED_FILE,verbose=isverbose,reply=doesreply)
-                if isverbose:print("[*] Starting threads")
-                startThreadsAll(racismChecker,verbose=isverbose)
+                if isverbose:
+                    print("[*] Starting threads")
+                    if multithreadR:print("[*] Replying in seperate thread")
+                startThreadsAll(racismChecker,verbose=isverbose,multithreadReplies=multithreadR)
             else:
                 print("Type '-help' for help")
     except Exception as e:

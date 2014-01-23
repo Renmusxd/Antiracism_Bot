@@ -49,7 +49,7 @@ class DataStructure(object):
     def add(self,item,value):
         newNode = StackNode(item,value)
         if self.topNode!=None:
-            selNode = topNode
+            selNode = self.topNode
             while True:
                 if value>selNode.getValue():
                     newNode.setPrev(selNode.prev())
