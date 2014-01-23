@@ -245,7 +245,7 @@ def getCredentials(fileName):
 
 def startThreadsAll(bot,verbose=False):
     p1 = Process(target=serverHandler)
-    p2 = Process(target=networkHandler,args=(DEFAULT_LIMIT,bot,None,verbose))
+    p2 = Process(target=networkHandler,args=(DEFAULT_NETWORK_LIMIT,bot,None,verbose))
     p3 = Process(target=bot.allLoop)
     p1.start()
     p2.start()
@@ -254,7 +254,7 @@ def startThreadsAll(bot,verbose=False):
     
 def startThreadsSubreddit(bot,subredditString,verbose=False):
     p1 = Process(target=serverHandler)
-    p2 = Process(target=networkHandler,args=(DEFAULT_LIMIT,bot,None,verbose))
+    p2 = Process(target=networkHandler,args=(DEFAULT_NETWORK_LIMIT,bot,None,verbose))
     p3 = Process(target=bot.subredditLoop,args=(subredditString,))
     p1.start()
     p2.start()
