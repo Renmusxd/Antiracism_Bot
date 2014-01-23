@@ -311,7 +311,7 @@ class RacismChecker(object):
                     # Else in the middle
                     else:
                         selChar1 = commentText[racistLocation-1]
-                        selChar2 = commentText[racismLocation+len(racistComment)]
+                        selChar2 = commentText[racistLocation+len(racistComment)]
                         if selChar1.isspace() and (selChar2.isspace() or (selChar2 in string.punctuation)):
                             passedTests = True
                     if passedTests:
