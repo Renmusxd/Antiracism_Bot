@@ -229,12 +229,19 @@ class RacismChecker(object):
                 racistLocation = commentText.find(racistComment.lower())
                 if racistLocation>-1: #additional tests
                     passedTests = False
+                    # If at beginning
                     if racistLocation==0:
-                        if commentText[len(racistComment)].isspace():
+                        # If the racist comment is at the end OR immediately followed by <space/newline>
+                        if len(CommentText)==racistLocation+len(racistComment):
                             passedTests = True
+                        elif commentText[len(racistComment)].isspace():
+                            passedTests = True
+                    # Else if at end
                     elif racistLocation+len(racistComment)==len(commentText):
+                        # if the char before is <space/newline>
                         if commentText[racistLocation-1].isspace():
                             passedTests = True
+                    # Else in the middle
                     else:
                         if commentText[racistLocation-1].isspace() and commentText[racistLocation+len(racistComment)].isspace():
                             passedTests = True
