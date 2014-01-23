@@ -154,6 +154,7 @@ class RacismChecker(object):
                 time.sleep(2)
             except Exception as e:
                 if self.verbose:print("[!] Exception: "+e.message)
+                reportException(e)
     
     def subredditCommentParsing(self,subredditName,sleepTime=2):
         '''
@@ -168,6 +169,7 @@ class RacismChecker(object):
                 time.sleep(sleepTime)
             except Exception as e:
                 if self.verbose:print("[!] Exception: "+e.message)
+                reportException(e)
                 
     def allCommentParsing(self,sleepTime=2):
         '''
@@ -181,6 +183,7 @@ class RacismChecker(object):
                 time.sleep(sleepTime)
             except Exception as e:
                 if self.verbose:print("[!] Exception: "+e.message)
+                reportException(e)
     
     def replyManager(self,sleepTime=10):
         '''
