@@ -5,7 +5,7 @@ import time
 import sys
 import os
 import praw
-
+import unicodedata
 #TODO make the comment fetching and analysis on a different threads
 # You can do this!
 
@@ -13,7 +13,7 @@ import praw
 # Probably more difficult
 
 __author__="Sumner"
-__version__="0.9.2.1"
+__version__="0.9.4"
 USER_AGENT = "Antiracism_Bot by /u/Renmusxd"
 DEFAULT_CREDENTIAL_FILE = "credentials.txt"
 DEFAULT_RACISM_FILE = "racist.txt"
@@ -54,7 +54,7 @@ class RacismChecker(object):
         self.racismFilePath = racismPhraseFilePath
         self.raceFilePath = raceFilePath
         self.repliedFilePath = repliedFilePath
-        self.racismKeyPhrases = {} # racistPhrase:reason
+        self.racismKeyPhrases = {} # racistPhrase:(reason,value)
         self.races = []
         if self.verbose:print("[*] Populating racism table")
         self.populateRacismDict()
@@ -86,15 +86,17 @@ class RacismChecker(object):
                 # Space on each side should prevent [jap]anese from alert
                 racismLine = racismLine.strip()
                 if racismLine.find(":")>-1:
+                    value = int(racismLine[:racismLine.find(":")])
+                    racismLine = racismLine[racismLine.find(":")+1:]
                     reason = racismLine[:racismLine.find(":")]
                     racismLine = racismLine[racismLine.find(":")+1:]
                     if "[RACE]" in racismLine:
                         recRacismTable = self.raceRecursion(racismLine)
                         for phrase in recRacismTable:
-                            racismTable[phrase.lower()] = reason.lower()
+                            racismTable[phrase.lower()] = (reason.lower(),value)
                     else:
                         # ALL LOWER CASE!
-                        racismTable[racismLine.lower()] = reason.lower()
+                        racismTable[racismLine.lower()] = (reason.lower(),value)
                 else:
                     if self.verbose:print("\t[!] Failed to parse: "+racismLine)
         if self.verbose:print("\t[*] Constructed "+str(len(racismTable))+" racist phrases")
@@ -144,7 +146,8 @@ class RacismChecker(object):
             try:
                 comment, replyText = self.todo.pop()
                 comment.reply(replyText)
-                if self.verbose:print("[*] Replied to comment "+comment.id+":\n"+replyText)
+                subredditname = unicodedata.normalize('NFKD', comment.subreddit.display_name).encode('ascii','ignore')
+                if self.verbose:print("[*] Replied to comment "+comment.id+" in /r/"++":\n"+replyText)
                 self.alreadyDone.add(comment.id)
                 self.todoIDs.remove(comment.id)
             except praw.errors.RateLimitExceeded:
@@ -166,17 +169,22 @@ class RacismChecker(object):
         for comment in comments:
             (commentisracist, quotes) = self.checkIfCommentIsRacist(comment.body.lower())
             if commentisracist and comment.author.name.lower()!=self.username.lower() and comment.id not in self.alreadyDone and comment.id not in self.todoIDs:
-                if self.verbose:
-                    print("[*] Found racist comment: "+comment.id)
-                    print("[*] "+comment.body.strip())
                 replyText = "Your comment contains "
                 reasonDict = {}
+                totalValue = 0
                 for quote in quotes:
-                    reason = self.racismKeyPhrases[quote]
+                    key = self.racismKeyPhrases[quote] #key = (reason,value)
+                    reason = key[0]
+                    totalValue+=key[1]
                     if reason in reasonDict:
                         reasonDict[reason]+=1
                     else:
                         reasonDict[reason]=1
+                if self.verbose:
+                    subredditname = unicodedata.normalize('NFKD', comment.subreddit.display_name).encode('ascii','ignore')
+                    print("[*] Found racist comment: "+comment.id+" in /r/"+subredditname)
+                    print("[*] "+comment.body.strip())
+                    print("[*] Value: "+str(totalValue))
                 # Make sentence based on racism
                 for racismReason, count in reasonDict.iteritems():
                     replyText+=racismReason+"("+str(count)+"), "
@@ -201,16 +209,17 @@ class RacismChecker(object):
                         print("\t[!] Cannot reply: Ratelimit Error")
                         print("\t[*] "+e.message)
                         print("\t[*] Adding comment to TODO set")
-                        self.todo.add((comment,replyText),1)
+                        self.todo.add((comment,replyText),)
                         self.todoIDs.append(comment.id)
                     
     def checkIfCommentIsRacist(self,commentText):
         '''
         Checks if a comment(string) is racist, returns (boolean,List)
         '''
-        commentText = commentText.lower()
+        originalCommentText = commentText.lower()
         racistCommentList = []
         for racistComment in self.racismKeyPhrases:
+            commentText = originalCommentText
             while True:
                 racistLocation = commentText.find(racistComment.lower())
                 if racistLocation>-1: #additional tests
@@ -225,8 +234,8 @@ class RacismChecker(object):
                         if commentText[racistLocation-1].isspace() and commentText[racistLocation+len(racistComment)].isspace():
                             passedTests = True
                     if passedTests:
-                        commentText = commentText.replace(racistComment.lower(),"",1)
                         racistCommentList.append(racistComment)
+                    commentText = commentText.replace(racistComment.lower(),"",1)
                 else:
                     break
         if len(racistCommentList)>0:

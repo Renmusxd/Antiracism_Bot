@@ -1,39 +1,39 @@
-ARB Test:arb test
-ARB Test 2: arbtest
-Generalizations:[RACE] people are
-Generalizations:[RACE] are
-Racism:i hate [RACE]
-Racism:i hate all [RACE]
-Racism:kill the [RACE]
-Racism:down with the [RACE]
-Slurs:nigger
-Slurs:niggers
-Slurs:chink
-Slurs:chinks
-Slurs:pollok
-Slurs:polloks
-Slurs:wetback
-Slurs:wetbacks
-Slurs:beaner
-Slurs:beaners
-Slurs:cracker
-Slurs:crackers
-Slurs:chonky
-Slurs:chonkies
-Slurs:chinkys
-Slurs:gaijin
-Slurs:golliwog
-Slurs:golliwogs
-Slurs:kike
-Slurs:kikes
-Slurs:redskin
-Slurs:redskins
-Slurs:gringo
-Slurs:gringos
-Slurs:jap
-Slurs:japs
-Slurs:ching chong
-Slurs:squaw
-Slurs:squaws
-Slurs:chinaman
-Slurs:chinamen
+0:ARB Test:arb test
+0:ARB Test 2: arbtest
+3:Generalizations:[RACE] people are
+3:Generalizations:[RACE] are
+8:Racism:i hate [RACE]
+8:Racism:i hate all [RACE]
+10:Racism:kill the [RACE]
+10:Racism:down with the [RACE]
+10:Slurs:nigger
+10:Slurs:niggers
+9:Slurs:chink
+9:Slurs:chinks
+8:Slurs:pollok
+8:Slurs:polloks
+8:Slurs:wetback
+8:Slurs:wetbacks
+8:Slurs:beaner
+8:Slurs:beaners
+1:Slurs:cracker
+1:Slurs:crackers
+8:Slurs:chonky
+8:Slurs:chonkies
+8:Slurs:chinkys
+1:Slurs:gaijin
+9:Slurs:golliwog
+9:Slurs:golliwogs
+8:Slurs:kike
+8:Slurs:kikes
+8:Slurs:redskin
+8:Slurs:redskins
+1:Slurs:gringo
+1:Slurs:gringos
+8:Slurs:jap
+8:Slurs:japs
+8:Slurs:ching chong
+8:Slurs:squaw
+8:Slurs:squaws
+8:Slurs:chinaman
+8:Slurs:chinamen
