@@ -180,6 +180,7 @@ class RacismChecker(object):
             time.sleep(sleepTime)
     
     def manageTODOs(self):
+        if self.verbose: print(todo.hasNext())
         if self.verbose and self.todo.hasNext():print("[*] Attempting to reply to TODOs")
         while self.todo.hasNext():
             try:
