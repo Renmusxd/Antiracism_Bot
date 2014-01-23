@@ -23,7 +23,7 @@ DEFAULT_RACE_FILE = "races.txt"
 DEFAULT_REPLIED_FILE = "replied.txt"
 DEFAULT_NETWORK_LIMIT = 1000000000L # May be subject to change
 
-sys.argv = ["antiracism_bot.py","-v","-m","-d","all"]
+sys.argv = ["antiracism_bot.py","-v","-m","all"]
 
 class RacismChecker(object):
     '''
@@ -267,7 +267,7 @@ class RacismChecker(object):
                     # If at beginning
                     if racistLocation==0:
                         # If the racist comment is at the end OR immediately followed by <space/newline>
-                        if len(CommentText)==racistLocation+len(racistComment):
+                        if len(commentText)==racistLocation+len(racistComment):
                             passedTests = True
                         elif commentText[len(racistComment)].isspace():
                             passedTests = True
