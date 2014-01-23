@@ -63,7 +63,7 @@ class RacismChecker(object):
         
     def shutDown(self):
         self.saveAlreadyDone()
-        this.running = False
+        self.running = False
         
     def populateRacismDict(self):
         '''
