@@ -13,9 +13,11 @@ import SocketServer
 # Probably more difficult
 
 #TODO improve ability to avoid false positives
+# he said/they think
+# good versus bad words
 
 __author__="Sumner"
-__version__="0.9.5"
+__version__="0.9.5.1"
 USER_AGENT = "Antiracism_Bot by /u/Renmusxd"
 DEFAULT_CREDENTIAL_FILE = "credentials.txt"
 DEFAULT_RACISM_FILE = "racist.txt"
@@ -219,7 +221,6 @@ class RacismChecker(object):
                     subredditname = unicodedata.normalize('NFKD', comment.subreddit.display_name).encode('ascii','ignore')
                     print("[*] Found racist comment: "+comment.id+" in /r/"+subredditname)
                     print("[*] Value: "+str(totalValue))
-                    print("[*] "+comment.body.strip())
                 # Make sentence based on racism
                 for racismReason, count in reasonDict.iteritems():
                     replyText+=racismReason+"("+str(count)+"), "
@@ -231,6 +232,9 @@ class RacismChecker(object):
                 if self.verbose:
                     for racismReason, count in reasonDict.iteritems():
                         print("\t-"+racismReason)
+                if self.verbose:
+                    print("[*] "+comment.body.strip())
+                    print("[*] Reply:\n"+replyText)
                 # Try to reply
                 if addTODO:
                     if self.verbose:print("[*] Adding reply to todo stack")
