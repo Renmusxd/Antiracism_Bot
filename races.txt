@@ -6,8 +6,8 @@ arab
 arabs
 mexican
 mexicans
-chinese
-japanese
+#chinese
+#japanese
 white
 whites
 jew
