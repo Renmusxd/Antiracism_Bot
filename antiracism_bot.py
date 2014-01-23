@@ -129,12 +129,16 @@ class RacismChecker(object):
         '''
         if self.verbose:print("[*] Checking subreddits: "+subredditName)
         while self.running:
-            subreddit = self.r.get_subreddit(subredditName)
-            subredditComments = subreddit.get_comments(limit=None)
-            self.commentLoop(subredditComments)
-            self.manageTODOs()
-            self.saveAlreadyDone()    
-            time.sleep(2)
+            try:
+                subreddit = self.r.get_subreddit(subredditName)
+                subredditComments = subreddit.get_comments(limit=None)
+                self.commentLoop(subredditComments)
+                self.manageTODOs()
+                self.saveAlreadyDone()    
+                time.sleep(2)
+            except Exception as e:
+                if self.verbose:print("[!] Exception: "+e.message)
+                reportException(e)
                     
     def allLoop(self):
         '''
@@ -142,11 +146,14 @@ class RacismChecker(object):
         '''
         if self.verbose:print("[*] Checking all subreddits")
         while self.running:
-            all_comments = self.r.get_comments("all",limit=None)
-            self.commentLoop(all_comments)
-            self.manageTODOs()
-            self.saveAlreadyDone()
-            time.sleep(2)
+            try:
+                all_comments = self.r.get_comments("all",limit=None)
+                self.commentLoop(all_comments)
+                self.manageTODOs()
+                self.saveAlreadyDone()
+                time.sleep(2)
+            except Exception as e:
+                if self.verbose:print("[!] Exception: "+e.message)
     
     def subredditCommentParsing(self,subredditName,sleepTime=2):
         '''
@@ -154,20 +161,26 @@ class RacismChecker(object):
         '''
         if self.verbose:print("[*] Starting comment parsing")
         while self.running:
-            subreddit = self.r.get_subreddit(subredditName)
-            subredditComments = subreddit.get_comments(limit=None)
-            self.commentLoop(subredditComments,addTODO=True)
-            time.sleep(sleepTime)
-    
+            try:
+                subreddit = self.r.get_subreddit(subredditName)
+                subredditComments = subreddit.get_comments(limit=None)
+                self.commentLoop(subredditComments,addTODO=True)
+                time.sleep(sleepTime)
+            except Exception as e:
+                if self.verbose:print("[!] Exception: "+e.message)
+                
     def allCommentParsing(self,sleepTime=2):
         '''
         Just reads and parses comments for all subreddits, does not autoreply
         '''
         if self.verbose:print("[*] Starting comment parsing")
         while self.running:
-            all_comments = self.r.get_comments("all",limit=None)
-            self.commentLoop(all_comments,addTODO=True)
-            time.sleep(sleepTime)
+            try:
+                all_comments = self.r.get_comments("all",limit=None)
+                self.commentLoop(all_comments,addTODO=True)
+                time.sleep(sleepTime)
+            except Exception as e:
+                if self.verbose:print("[!] Exception: "+e.message)
     
     def replyManager(self,sleepTime=10):
         '''
@@ -331,7 +344,7 @@ def startThreadsAll(bot,verbose=False,multithreadReplies=False):
         t3.join()
     except Exception as e:
         bot.shutdown()
-        raise e
+        reportException(e)
     
 def startThreadsSubreddit(bot,subredditString,verbose=False,multithreadReplies=False):
     t1 = Thread(target=serverHandler)
@@ -349,7 +362,7 @@ def startThreadsSubreddit(bot,subredditString,verbose=False,multithreadReplies=F
         t3.join()
     except Exception as e:
         bot.shutdown()
-        raise e
+        reportException(e)
     
 def serverHandler():
     #TODO communicate with clients
@@ -385,6 +398,28 @@ def networkHandler(limit,bot,focus=None,verbose=False):
         if verbose:print("[!] Exception encountered, shutting down")
         bot.shutDown()
         raise e
+
+def reportException(e):
+    r = praw.Reddit("Crashreport bot by /u/Renmusxd")
+    username = ""
+    password = ""
+    with open(DEFAULT_CREDENTIAL_FILE) as credFile:
+        for line in credFile:
+            line = line.strip()
+            if "username:" in line:
+                line = line.replace("username:","")
+                username = line
+            elif "password:" in line:
+                line = line.replace("password:","")
+                password = line
+    print("[!] Crashed with exception:\n"+str(type(e))+"\n\n"+e.message)
+    print("[!] Attempting to send message to Renmusxd")
+    try:
+        r.login(username,password)
+        r.send_message("Renmusxd","Crash report for Antiracism_Bot","Crashed with exception:\n"+str(type(e))+"\n\n"+e.message)
+        print("[+] Crash report sent sucessfully")
+    except Exception as e:
+        print("[!] Exception while sending report, sorry. There's nothing more I can do.")
 
 if __name__ == "__main__":
     mypath = os.path.dirname(os.path.realpath(__file__))
@@ -438,23 +473,4 @@ if __name__ == "__main__":
             else:
                 print("Type '-help' for help")
     except Exception as e:
-        r = praw.Reddit("Crashreport bot by /u/Renmusxd")
-        username = ""
-        password = ""
-        with open(DEFAULT_CREDENTIAL_FILE) as credFile:
-            for line in credFile:
-                line = line.strip()
-                if "username:" in line:
-                    line = line.replace("username:","")
-                    username = line
-                elif "password:" in line:
-                    line = line.replace("password:","")
-                    password = line
-        print("[!] Crashed with exception:\n"+str(type(e))+"\n\n"+e.message)
-        print("[!] Attempting to send message to Renmusxd")
-        try:
-            r.login(username,password)
-            r.send_message("Renmusxd","Crash report for Antiracism_Bot","Crashed with exception:\n"+str(type(e))+"\n\n"+e.message)
-            print("[+] Crash report sent sucessfully")
-        except Exception as e:
-            print("[!] Exception while sending report, sorry. There's nothing more I can do.")
+        reportException(e)
