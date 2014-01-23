@@ -12,7 +12,7 @@ import praw
 # http://stackoverflow.com/questions/8958614/measure-network-data-with-python
 
 __author__="Sumner"
-__version__="0.9"
+__version__="0.9.1"
 USER_AGENT = "Antiracism_Bot by /u/Renmusxd"
 DEFAULT_CREDENTIAL_FILE = "credentials.txt"
 DEFAULT_RACISM_FILE = "racist.txt"
@@ -70,13 +70,13 @@ class RacismChecker(object):
         if self.verbose:print("\t[*] Reading "+self.raceFilePath)
         with open(self.raceFilePath) as raceFile:
             for raceLine in raceFile:
-                raceLine = " "+raceLine.strip()+" "
+                raceLine = raceLine.strip()
                 self.races.append(raceLine)
         if self.verbose:print("\t[*] Race file contains "+str(len(self.races))+" races")
         if self.verbose:print("\t[*] Reading "+self.racismFilePath)
         with open(self.racismFilePath) as racismFile:
             for racismLine in racismFile:
-                racismLine = racismLine.strip()
+                racismLine = " "+racismLine.strip()+" "
                 if racismLine.find(":")>-1:
                     reason = racismLine[:racismLine.find(":")]
                     racismLine = racismLine[racismLine.find(":")+1:]
