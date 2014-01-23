@@ -243,18 +243,18 @@ def getCredentials(fileName):
                 password = line
     return (username,password)
 
-def startThreadsAll(bot):
+def startThreadsAll(bot,verbose=False):
     p1 = Process(target=serverHandler)
-    p2 = Process(target=networkHandler,args=())
+    p2 = Process(target=networkHandler,args=(DEFAULT_LIMIT,bot,None,verbose))
     p3 = Process(target=bot.allLoop)
     p1.start()
     p2.start()
     p3.start()
     p3.join()
     
-def startThreadsSubreddit(bot,subredditString):
+def startThreadsSubreddit(bot,subredditString,verbose=False):
     p1 = Process(target=serverHandler)
-    p2 = Process(target=networkHandler)
+    p2 = Process(target=networkHandler,args=(DEFAULT_LIMIT,bot,None,verbose))
     p3 = Process(target=bot.subredditLoop,args=(subredditString,))
     p1.start()
     p2.start()
@@ -331,11 +331,11 @@ if __name__ == "__main__":
                 for sub in args[2:]:
                     subredditString += "+"+sub
                 if isverbose:print("[*] Starting threads")
-                startThreadsSubreddit(racismChecker,subredditString)
+                startThreadsSubreddit(racismChecker,subredditString,verbose=isverbose)
             elif len(args)>1 and "all" in args:
                 racismChecker = RacismChecker(username, password,DEFAULT_RACISM_FILE,DEFAULT_RACE_FILE,DEFAULT_REPLIED_FILE,verbose=isverbose,reply=doesreply)
                 if isverbose:print("[*] Starting threads")
-                startThreadsAll(racismChecker)
+                startThreadsAll(racismChecker,verbose=isverbose)
             else:
                 print("Type '-help' for help")
     except Exception as e:
