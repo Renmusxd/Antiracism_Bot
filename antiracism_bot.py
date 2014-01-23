@@ -7,6 +7,8 @@ import os
 import praw
 import unicodedata
 import psutil
+import socket
+import SocketServer
 #TODO make the comment fetching and analysis on a different threads
 # You can do this!
 
