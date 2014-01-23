@@ -76,6 +76,7 @@ class RacismChecker(object):
         if self.verbose:print("\t[*] Reading "+self.racismFilePath)
         with open(self.racismFilePath) as racismFile:
             for racismLine in racismFile:
+                # Space on each side should prevent [jap]anese from alert
                 racismLine = " "+racismLine.strip()+" "
                 if racismLine.find(":")>-1:
                     reason = racismLine[:racismLine.find(":")]
