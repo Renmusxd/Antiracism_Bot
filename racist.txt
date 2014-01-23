@@ -3,6 +3,7 @@
 # Needs refinement
 #3:Generalizations:[RACE] people are
 #3:Generalizations:all [RACE] are
+3:Generalizations:all [RACE] people are
 8:Racism:i hate [RACE]
 8:Racism:i hate all [RACE]
 10:Racism:kill the [RACE]
