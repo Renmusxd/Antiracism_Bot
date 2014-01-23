@@ -61,6 +61,7 @@ class RacismChecker(object):
         self.todo = {}
         
     def shutDown(self):
+        self.saveAlreadyDone()
         this.running = False
         
     def populateRacismDict(self):
@@ -246,9 +247,36 @@ def serverHandler():
     #TODO communicate with clients
     pass
 
-def networkHandler():
-    #TODO monitor network usage
-    pass
+def networkHandler(limit,bot,focus=None,verbose=False):
+    managing = True
+    try:
+        while managing:
+            sleep(300)
+            netinfo = psutil.network_io_counters(pernic=True)
+            totalusage = 0
+            if focus in netinfo:
+                focusNetInfo = netinfo[focus]
+                totalusage = focusNetInfo.bytes_sent + focusNetInfo.bytes_recv
+            else:
+                for key,focusNetInfo in netinfo.iteritems():
+                    totalusage += focusNetInfo.bytes_sent + focusNetInfo.bytes_recv
+            if totalusage>limit:
+                if verbose:
+                    print("[!] Total network usage exceeded max")
+                    print("\t"+str(totalusage)+"/"+str(limit))
+                    print("[!] Shutting down")
+                bot.shutDown()
+                managing = False
+            if verbose:
+                if focus in netinfo:
+                    print("[*] Total network usage on "+focus+": "+str(totalusage))
+                else:
+                    print("[*] Total network usage: "+str(totalusage))
+                    
+    except Exception as e:
+        if verbose:print("[!] Exception encountered, shutting down")
+        bot.shutDown()
+        raise e
 
 if __name__ == "__main__":
     mypath = os.path.dirname(os.path.realpath(__file__))
