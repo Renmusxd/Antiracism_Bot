@@ -78,27 +78,29 @@ class RacismChecker(object):
         with open(self.raceFilePath) as raceFile:
             for raceLine in raceFile:
                 raceLine = raceLine.strip()
-                self.races.append(raceLine)
+                if raceLine[0]!="#":
+                    self.races.append(raceLine)
         if self.verbose:print("\t[*] Race file contains "+str(len(self.races))+" races")
         if self.verbose:print("\t[*] Reading "+self.racismFilePath)
         with open(self.racismFilePath) as racismFile:
             for racismLine in racismFile:
                 # Space on each side should prevent [jap]anese from alert
                 racismLine = racismLine.strip()
-                if racismLine.find(":")>-1:
-                    value = int(racismLine[:racismLine.find(":")])
-                    racismLine = racismLine[racismLine.find(":")+1:]
-                    reason = racismLine[:racismLine.find(":")]
-                    racismLine = racismLine[racismLine.find(":")+1:]
-                    if "[RACE]" in racismLine:
-                        recRacismTable = self.raceRecursion(racismLine)
-                        for phrase in recRacismTable:
-                            racismTable[phrase.lower()] = (reason.lower(),value)
+                if racismLine[0]!="#":
+                    if racismLine.find(":")>-1:
+                        value = int(racismLine[:racismLine.find(":")])
+                        racismLine = racismLine[racismLine.find(":")+1:]
+                        reason = racismLine[:racismLine.find(":")]
+                        racismLine = racismLine[racismLine.find(":")+1:]
+                        if "[RACE]" in racismLine:
+                            recRacismTable = self.raceRecursion(racismLine)
+                            for phrase in recRacismTable:
+                                racismTable[phrase.lower()] = (reason.lower(),value)
+                        else:
+                            # ALL LOWER CASE!
+                            racismTable[racismLine.lower()] = (reason.lower(),value)
                     else:
-                        # ALL LOWER CASE!
-                        racismTable[racismLine.lower()] = (reason.lower(),value)
-                else:
-                    if self.verbose:print("\t[!] Failed to parse: "+racismLine)
+                        if self.verbose:print("\t[!] Failed to parse: "+racismLine)
         if self.verbose:print("\t[*] Constructed "+str(len(racismTable))+" racist phrases")
         self.racismKeyPhrases = racismTable
                     
