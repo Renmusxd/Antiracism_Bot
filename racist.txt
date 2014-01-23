@@ -1,5 +1,6 @@
 0:ARB Test:arb test
 0:ARB Test2: arbtest
+# Needs refinement
 3:Generalizations:[RACE] people are
 3:Generalizations:all [RACE] are
 8:Racism:i hate [RACE]
@@ -26,6 +27,7 @@
 9:Slurs:golliwogs
 8:Slurs:kike
 8:Slurs:kikes
+# Too many football posts
 #8:Slurs:redskin
 #8:Slurs:redskins
 1:Slurs:gringo
