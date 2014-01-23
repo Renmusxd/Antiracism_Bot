@@ -8,35 +8,35 @@
 8:Racism:i hate all [RACE]
 10:Racism:kill the [RACE]
 10:Racism:down with the [RACE]
-10:Slurs:nigger
-10:Slurs:niggers
-9:Slurs:chink
-9:Slurs:chinks
-8:Slurs:pollok
-8:Slurs:polloks
-8:Slurs:wetback
-8:Slurs:wetbacks
-8:Slurs:beaner
-8:Slurs:beaners
-1:Slurs:cracker
-1:Slurs:crackers
-8:Slurs:chonky
-8:Slurs:chonkies
-8:Slurs:chinkys
-1:Slurs:gaijin
-9:Slurs:golliwog
-9:Slurs:golliwogs
-8:Slurs:kike
-8:Slurs:kikes
+10:Racial slurs:nigger
+10:Racial slurs:niggers
+9:Racial slurs:chink
+9:Racial slurs:chinks
+8:Racial slurs:pollok
+8:Racial slurs:polloks
+8:Racial slurs:wetback
+8:Racial slurs:wetbacks
+8:Racial slurs:beaner
+8:Racial slurs:beaners
+1:Racial slurs:cracker
+1:Racial slurs:crackers
+8:Racial slurs:chonky
+8:Racial slurs:chonkies
+8:Racial slurs:chinkys
+1:Racial slurs:gaijin
+9:Racial slurs:golliwog
+9:Racial slurs:golliwogs
+8:Racial slurs:kike
+8:Racial slurs:kikes
 # Too many football posts
-#8:Slurs:redskin
-#8:Slurs:redskins
-1:Slurs:gringo
-1:Slurs:gringos
-8:Slurs:jap
-8:Slurs:japs
-8:Slurs:ching chong
-8:Slurs:squaw
-8:Slurs:squaws
-8:Slurs:chinaman
-8:Slurs:chinamen
+#8:Racial slurs:redskin
+#8:Racial slurs:redskins
+1:Racial slurs:gringo
+1:Racial slurs:gringos
+8:Racial slurs:jap
+8:Racial slurs:japs
+8:Racial slurs:ching chong
+8:Racial slurs:squaw
+8:Racial slurs:squaws
+8:Racial slurs:chinaman
+8:Racial slurs:chinamen
