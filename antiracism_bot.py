@@ -399,7 +399,7 @@ def networkHandler(limit,bot,focus=None,verbose=False):
         bot.shutDown()
         raise e
 
-def reportException(e):
+def reportException(e,verbose=False):
     r = praw.Reddit("Crashreport bot by /u/Renmusxd")
     username = ""
     password = ""
@@ -417,9 +417,9 @@ def reportException(e):
     try:
         r.login(username,password)
         r.send_message("Renmusxd","Crash report for Antiracism_Bot","Crashed with exception:\n"+str(type(e))+"\n\n"+e.message)
-        print("[+] Crash report sent sucessfully")
-    except Exception as e:
-        print("[!] Exception while sending report, sorry. There's nothing more I can do.")
+        if verbose:print("[+] Crash report sent sucessfully")
+    except Exception:
+        if verbose:print("[!] Exception while sending report, sorry. There's nothing more I can do.")
 
 if __name__ == "__main__":
     mypath = os.path.dirname(os.path.realpath(__file__))
