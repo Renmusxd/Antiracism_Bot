@@ -304,7 +304,11 @@ if __name__ == "__main__":
                 elif "password:" in line:
                     line = line.replace("password:","")
                     password = line
-        r.login(username,password)
-        print("Crashed with exception:\n"+str(type(e))+"\n\n"+e.message)
-        print("Attempting to send message to Renmusxd")
-        r.send_message("Renmusxd","Crash report for Antiracism_Bot","Crashed with exception:\n"+str(type(e))+"\n\n"+e.message)    
+        print("[!] Crashed with exception:\n"+str(type(e))+"\n\n"+e.message)
+        print("[!] Attempting to send message to Renmusxd")
+        try:
+            r.login(username,password)
+            r.send_message("Renmusxd","Crash report for Antiracism_Bot","Crashed with exception:\n"+str(type(e))+"\n\n"+e.message)
+            print("[+] Crash report sent sucessfully")
+        except Exception as e:
+            print("[!] Exception while sending report, sorry. There's nothing more I can do.")
