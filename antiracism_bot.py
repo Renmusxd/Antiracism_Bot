@@ -18,6 +18,7 @@ DEFAULT_CREDENTIAL_FILE = "credentials.txt"
 DEFAULT_RACISM_FILE = "racist.txt"
 DEFAULT_RACE_FILE = "races.txt"
 DEFAULT_REPLIED_FILE = "replied.txt"
+DEFAULT_NETWORK_LIMIT = 1000000000L # May be subject to change
 
 class RacismChecker(object):
     '''
@@ -86,10 +87,10 @@ class RacismChecker(object):
                     if "[RACE]" in racismLine:
                         recRacismTable = self.raceRecursion(racismLine)
                         for phrase in recRacismTable:
-                            racismTable[" "+phrase.lower()+" "] = reason.lower()
+                            racismTable[phrase.lower()] = reason.lower()
                     else:
                         # ALL LOWER CASE!
-                        racismTable[" "+racismLine.lower()+" "] = reason.lower()
+                        racismTable[racismLine.lower()] = reason.lower()
                 else:
                     if self.verbose:print("\t[!] Failed to parse: "+racismLine)
         if self.verbose:print("\t[*] Constructed "+str(len(racismTable))+" racist phrases")
@@ -174,7 +175,7 @@ class RacismChecker(object):
                 # Make sentence based on racism
                 for racismReason, count in reasonDict.iteritems():
                     replyText+=racismReason+"("+str(count)+"), "
-                replyText = replyText[:-2]+".  \n\n  "
+                replyText = replyText[:-2]+"!  \n\n  "
                 i=1
                 for quote in quotes:
                     replyText+="\t"+str(i)+". "+quote+"\n\n"
@@ -200,10 +201,27 @@ class RacismChecker(object):
         '''
         Checks if a comment(string) is racist, returns (boolean,List)
         '''
+        commentText = commentText.lower()
         racistCommentList = []
         for racistComment in self.racismKeyPhrases:
-            if racistComment in commentText:
-                racistCommentList.append(racistComment)
+            while True:
+                racistLocation = commentText.find(racistComment.lower())
+                if racistLocation>-1: #additional tests
+                    passedTests = False
+                    if racistLocation==0:
+                        if commentText[len(racistComment)].isspace():
+                            passedTests = True
+                    elif racistLocation+len(racistComment)==len(commentText):
+                        if commentText[racistLocation-1].isspace():
+                            passedTests = True
+                    else:
+                        if commentText[racistLocation-1].isspace() and commentText[racistLocation+len(racistComment)].isspace():
+                            passedTests = True
+                    if passedTests:
+                        commentText = commentText.replace(racistComment.lower(),"",1)
+                        racistCommentList.append(racistComment)
+                else:
+                    break
         if len(racistCommentList)>0:
             return (True,racistCommentList)
         return (False,None)
@@ -227,7 +245,7 @@ def getCredentials(fileName):
 
 def startThreadsAll(bot):
     p1 = Process(target=serverHandler)
-    p2 = Process(target=networkHandler)
+    p2 = Process(target=networkHandler,args=())
     p3 = Process(target=bot.allLoop)
     p1.start()
     p2.start()
