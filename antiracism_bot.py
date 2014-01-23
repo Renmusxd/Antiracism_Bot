@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 from RacismDataStructure import DataStructure
-from multiprocessing import Process
+from threading import Thread
 import time
 import sys
 import os
@@ -26,7 +26,7 @@ DEFAULT_RACE_FILE = "races.txt"
 DEFAULT_REPLIED_FILE = "replied.txt"
 DEFAULT_NETWORK_LIMIT = 1000000000L # May be subject to change
 
-#sys.argv = ["antiracism_bot.py","-v","-d","-m","all"]
+sys.argv = ["antiracism_bot.py","-v","-d","-m","all"]
 
 class RacismChecker(object):
     '''
@@ -180,8 +180,6 @@ class RacismChecker(object):
             time.sleep(sleepTime)
     
     def manageTODOs(self):
-        if self.verbose: print(todo.hasNext())
-        if self.verbose and self.todo.hasNext():print("[*] Attempting to reply to TODOs")
         while self.todo.hasNext():
             try:
                 comment, replyText = self.todo.pop()
@@ -239,11 +237,12 @@ class RacismChecker(object):
                     for racismReason, count in reasonDict.iteritems():
                         print("\t-"+racismReason)
                 if self.verbose:
-                    print("[*] "+comment.body.strip())
+                    commentBody = unicodedata.normalize('NFKD', comment.body.strip()).encode('ascii','ignore')
+                    print("[*] "+commentBody)
                     print("[*] Reply:\n"+replyText)
                 # Try to reply
                 if addTODO:
-                    if self.verbose:print("[*] Adding reply to todo stack")
+                    if self.verbose:print("[*] Adding comment to todo stack")
                     self.todo.add((comment,replyText),totalValue)
                     self.todoIDs.append(comment.id)
                 else:
@@ -317,37 +316,37 @@ def getCredentials(fileName):
     return (username,password)
 
 def startThreadsAll(bot,verbose=False,multithreadReplies=False):
-    p1 = Process(target=serverHandler)
-    p2 = Process(target=networkHandler,args=(DEFAULT_NETWORK_LIMIT,bot,None,verbose))
+    t1 = Thread(target=serverHandler)
+    t2 = Thread(target=networkHandler,args=(DEFAULT_NETWORK_LIMIT,bot,None,verbose))
     if not multithreadReplies:
-        p3 = Process(target=bot.allLoop)
+        t3 = Thread(target=bot.allLoop)
     else:
-        p3 = Process(target=bot.allCommentParsing)
-        p4 = Process(target=bot.replyManager)
+        t3 = Thread(target=bot.allCommentParsing)
+        t4 = Thread(target=bot.replyManager)
     try:
-        p1.start()
-        p2.start()
-        p3.start()
-        if p4:p4.start()
-        p3.join()
+        t1.start()
+        t2.start()
+        t3.start()
+        if t4:t4.start()
+        t3.join()
     except Exception as e:
         bot.shutdown()
         raise e
     
 def startThreadsSubreddit(bot,subredditString,verbose=False,multithreadReplies=False):
-    p1 = Process(target=serverHandler)
-    p2 = Process(target=networkHandler,args=(DEFAULT_NETWORK_LIMIT,bot,None,verbose))
+    t1 = Thread(target=serverHandler)
+    t2 = Thread(target=networkHandler,args=(DEFAULT_NETWORK_LIMIT,bot,None,verbose))
     if not multithreadReplies:
-        p3 = Process(target=bot.subredditLoop,args=(subredditString,))
+        t3 = Thread(target=bot.subredditLoop,args=(subredditString,))
     else:
-        p3 = Process(target=bot.subredditCommentParsing,args=(subredditString))
-        p4 = Process(target=bot.replyManager)
+        t3 = Thread(target=bot.subredditCommentParsing,args=(subredditString))
+        t4 = Thread(target=bot.replyManager)
     try:
-        p1.start()
-        p2.start()
-        p3.start()
-        if p4:p4.start()
-        p3.join()
+        t1.start()
+        t2.start()
+        t3.start()
+        if t4:t4.start()
+        t3.join()
     except Exception as e:
         bot.shutdown()
         raise e
