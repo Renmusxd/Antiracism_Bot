@@ -12,7 +12,7 @@ import praw
 # http://stackoverflow.com/questions/8958614/measure-network-data-with-python
 
 __author__="Sumner"
-__version__="0.9.1"
+__version__="0.9.2"
 USER_AGENT = "Antiracism_Bot by /u/Renmusxd"
 DEFAULT_CREDENTIAL_FILE = "credentials.txt"
 DEFAULT_RACISM_FILE = "racist.txt"
