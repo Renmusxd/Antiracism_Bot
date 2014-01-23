@@ -187,6 +187,7 @@ class RacismChecker(object):
                 if self.verbose:
                     for racismReason, count in reasonDict.iteritems():
                         print("\t-"+racismReason)
+                # Try to reply
                 try:
                     if self.reply:
                         comment.reply(replyText)
