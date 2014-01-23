@@ -63,6 +63,7 @@ class RacismChecker(object):
         if self.verbose:print("[*] Reading previously made comments")
         self.readAlreadyDone()
         self.todo = DataStructure()
+        self.todoIDs = []
         
     def shutDown(self):
         self.saveAlreadyDone()
@@ -145,7 +146,7 @@ class RacismChecker(object):
                 comment.reply(replyText)
                 if self.verbose:print("[*] Replied to comment "+comment.id+":\n"+replyText)
                 self.alreadyDone.add(comment.id)
-                self.todo.remove(comment)
+                self.todoIDs.remove(comment.id)
             except praw.errors.RateLimitExceeded:
                 return
     
@@ -164,7 +165,7 @@ class RacismChecker(object):
     def commentLoop(self,comments):
         for comment in comments:
             (commentisracist, quotes) = self.checkIfCommentIsRacist(comment.body.lower())
-            if commentisracist and comment.author.name.lower()!=self.username.lower() and comment.id not in self.alreadyDone and comment not in self.todo:
+            if commentisracist and comment.author.name.lower()!=self.username.lower() and comment.id not in self.alreadyDone and comment.id not in self.todoIDs:
                 if self.verbose:
                     print("[*] Found racist comment: "+comment.id)
                     print("[*] "+comment.body.strip())
@@ -201,6 +202,7 @@ class RacismChecker(object):
                         print("\t[*] "+e.message)
                         print("\t[*] Adding comment to TODO set")
                         self.todo.add((comment,replyText),1)
+                        self.todoIDs.append(comment.id)
                     
     def checkIfCommentIsRacist(self,commentText):
         '''

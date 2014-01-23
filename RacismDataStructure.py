@@ -3,7 +3,7 @@
 # and open the template in the editor.
 
 __author__="Sumner"
-__version__="0.1"
+__version__="1.0"
 
 class StackNode(object):
     def __init__(self,item,value):
