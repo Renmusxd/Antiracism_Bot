@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 from RacismDataStructure import DataStructure
 from threading import Thread
+import string
 import time
 import sys
 import os
@@ -296,18 +297,22 @@ class RacismChecker(object):
                     # If at beginning
                     if racistLocation==0:
                         # If the racist comment is at the end OR immediately followed by <space/newline>
+                        selChar = commentText[len(racistComment)]
                         if len(commentText)==racistLocation+len(racistComment):
                             passedTests = True
-                        elif commentText[len(racistComment)].isspace():
+                        elif selChar.isspace() or (selChar in string.punctuation):
                             passedTests = True
                     # Else if at end
                     elif racistLocation+len(racistComment)==len(commentText):
                         # if the char before is <space/newline>
-                        if commentText[racistLocation-1].isspace():
+                        selChar = commentText[racistLocation-1]
+                        if selChar.isspace() or (selChar in string.punctuation):
                             passedTests = True
                     # Else in the middle
                     else:
-                        if commentText[racistLocation-1].isspace() and commentText[racistLocation+len(racistComment)].isspace():
+                        selChar1 = commentText[racistLocation-1]
+                        selChar2 = commentText[racismLocation+len(racistComment)]
+                        if selChar1.isspace() and (selChar2.isspace() or (selChar2 in string.punctuation)):
                             passedTests = True
                     if passedTests:
                         racistCommentList.append(racistComment)
