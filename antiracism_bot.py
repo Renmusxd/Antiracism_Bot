@@ -27,7 +27,7 @@ DEFAULT_RACE_FILE = "races.txt"
 DEFAULT_REPLIED_FILE = "replied.txt"
 DEFAULT_NETWORK_LIMIT = 1000000000L # May be subject to change
 
-#sys.argv = ["antiracism_bot.py","-v","-d","-m","all"]
+sys.argv = ["antiracism_bot.py","-v","test"]
 
 class RacismChecker(object):
     '''
@@ -249,6 +249,11 @@ class RacismChecker(object):
                 # Make sentence based on racism
                 for racismReason, count in reasonDict.iteritems():
                     replyText+=racismReason+"("+str(count)+"), "
+                # Just for crackers
+                print(quotes)
+                if "cracker" in quotes or "crackers" in quotes:
+                    replyText = replyText[:-2]+", or references to [crackers](http://en.wikipedia.org/wiki/Cracker_\(food\)), "
+                
                 replyText = replyText[:-2]+"!  \n\n  "
                 i=1
                 for quote in quotes:
@@ -297,11 +302,12 @@ class RacismChecker(object):
                     # If at beginning
                     if racistLocation==0:
                         # If the racist comment is at the end OR immediately followed by <space/newline>
-                        selChar = commentText[len(racistComment)]
                         if len(commentText)==racistLocation+len(racistComment):
                             passedTests = True
-                        elif selChar.isspace() or (selChar in string.punctuation):
-                            passedTests = True
+                        else:
+                            selChar = commentText[len(racistComment)]
+                            if selChar.isspace() or (selChar in string.punctuation):
+                                passedTests = True
                     # Else if at end
                     elif racistLocation+len(racistComment)==len(commentText):
                         # if the char before is <space/newline>
@@ -480,7 +486,7 @@ if __name__ == "__main__":
                 if isverbose:
                     print("[*] Starting threads")
                     if multithreadR:print("[*] Replying in seperate thread")
-                startThreadsSubreddit(racismChecker,subredditString,verbose=isverbose,multithreadReplies=multiThreadR)
+                startThreadsSubreddit(racismChecker,subredditString,verbose=isverbose,multithreadReplies=multithreadR)
             elif len(args)>1 and "all" in args:
                 racismChecker = RacismChecker(username, password,DEFAULT_RACISM_FILE,DEFAULT_RACE_FILE,DEFAULT_REPLIED_FILE,verbose=isverbose,reply=doesreply)
                 if isverbose:
