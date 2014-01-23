@@ -1,5 +1,5 @@
 0:ARB Test:arb test
-0:ARB Test 2: arbtest
+0:ARB Test2: arbtest
 3:Generalizations:[RACE] people are
 3:Generalizations:all [RACE] are
 8:Racism:i hate [RACE]
@@ -26,8 +26,8 @@
 9:Slurs:golliwogs
 8:Slurs:kike
 8:Slurs:kikes
-8:Slurs:redskin
-8:Slurs:redskins
+#8:Slurs:redskin
+#8:Slurs:redskins
 1:Slurs:gringo
 1:Slurs:gringos
 8:Slurs:jap
