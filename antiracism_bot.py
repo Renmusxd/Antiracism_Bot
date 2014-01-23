@@ -338,6 +338,8 @@ def getCredentials(fileName):
 def startThreadsAll(bot,verbose=False,multithreadReplies=False):
     t1 = Thread(target=serverHandler)
     t2 = Thread(target=networkHandler,args=(DEFAULT_NETWORK_LIMIT,bot,None,verbose))
+    t3 = None
+    t4 = None
     if not multithreadReplies:
         t3 = Thread(target=bot.allLoop)
     else:
@@ -356,6 +358,8 @@ def startThreadsAll(bot,verbose=False,multithreadReplies=False):
 def startThreadsSubreddit(bot,subredditString,verbose=False,multithreadReplies=False):
     t1 = Thread(target=serverHandler)
     t2 = Thread(target=networkHandler,args=(DEFAULT_NETWORK_LIMIT,bot,None,verbose))
+    t3 = None
+    t4 = None
     if not multithreadReplies:
         t3 = Thread(target=bot.subredditLoop,args=(subredditString,))
     else:
